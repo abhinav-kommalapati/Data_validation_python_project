@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Validator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            opacity: 0.1;
+            z-index: 0;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        .input-focus-ring {
+            transition: all 0.2s ease;
+        }
+        .input-focus-ring:focus {
+            box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+        }
+        .validation-icon {
+            transition: all 0.2s ease;
+            opacity: 0.7;
+            font-size: 0.875rem;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease forwards;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .input-gradient {
+            background: linear-gradient(135deg, #f6f9fc 0%, #ffffff 100%);
+        }
+        .result-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border: 1px solid rgba(102, 126, 234, 0.1);
+            transition: all 0.2s ease;
+        }
+        .result-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+        .floating {
+            animation: floating 3s ease-in-out infinite;
+        }
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .progress-bar {
+            height: 4px;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .tooltip {
+            position: relative;
+        }
+        .tooltip:hover::after {
+            content: attr(data-tooltip);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+            z-index: 10;
+        }
+        .submit-button {
+            transition: all 0.2s ease;
+            transform: none !important;
+        }
+        .submit-button:hover {
+            background: linear-gradient(to right, #4f46e5, #7c3aed);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .submit-button:active {
+            transform: translateY(1px) !important;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-12 px-4">
+    <div class="container mx-auto max-w-3xl relative z-10">
+        <!-- Header Section -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold gradient-text mb-3">Data Validator</h1>
+            <p class="text-white text-lg opacity-90">Validate your data with precision and confidence</p>
+        </div>
+
+        <!-- Main Card -->
+        <div class="glass-card rounded-xl shadow-xl p-6">
+            <form id="validatorForm" class="space-y-5">
+                <!-- Name Input -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Name</label>
+                    <div class="relative">
+                        <input type="text" name="name" 
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 input-gradient input-focus-ring focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200" 
+                            placeholder="Enter your name" required
+                            data-tooltip="Enter your full name">
+                        <div class="validation-icon absolute right-3 top-1/2 transform -translate-y-1/2"></div>
+                    </div>
+                </div>
+
+                <!-- Mobile Number Input -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Mobile Number</label>
+                    <div class="relative">
+                        <input type="text" name="mobile" 
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 input-gradient input-focus-ring focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200" 
+                            placeholder="Enter 10-digit mobile number" required
+                            data-tooltip="Enter a valid 10-digit mobile number">
+                        <div class="validation-icon absolute right-3 top-1/2 transform -translate-y-1/2"></div>
+                    </div>
+                </div>
+
+                <!-- Email Input -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <div class="relative">
+                        <input type="email" name="email" 
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 input-gradient input-focus-ring focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200" 
+                            placeholder="Enter your email" required
+                            data-tooltip="Enter a valid email address">
+                        <div class="validation-icon absolute right-3 top-1/2 transform -translate-y-1/2"></div>
+                    </div>
+                </div>
+
+                <!-- Password Input -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Password</label>
+                    <div class="relative">
+                        <input type="password" name="password" 
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 input-gradient input-focus-ring focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200" 
+                            placeholder="Enter password" required
+                            data-tooltip="Password must contain uppercase, lowercase, number, and special character">
+                        <div class="validation-icon absolute right-3 top-1/2 transform -translate-y-1/2"></div>
+                    </div>
+                    <div class="password-strength mt-2 h-1 bg-gray-200 rounded-full overflow-hidden">
+                        <div class="strength-bar h-full w-0 transition-all duration-300"></div>
+                    </div>
+                </div>
+
+                <!-- IP Address Input -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">IP Address</label>
+                    <div class="relative">
+                        <input type="text" name="ip" 
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 input-gradient input-focus-ring focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200" 
+                            placeholder="Enter IP address" required
+                            data-tooltip="Enter a valid IP address (e.g., 192.168.1.1)">
+                        <div class="validation-icon absolute right-3 top-1/2 transform -translate-y-1/2"></div>
+                    </div>
+                </div>
+
+                <!-- Date Input -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">Date</label>
+                    <div class="relative">
+                        <input type="text" name="date" 
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 input-gradient input-focus-ring focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200" 
+                            placeholder="DD-MM-YYYY" required
+                            data-tooltip="Enter date in DD-MM-YYYY format">
+                        <div class="validation-icon absolute right-3 top-1/2 transform -translate-y-1/2"></div>
+                    </div>
+                </div>
+
+                <!-- File Upload -->
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium text-gray-700">File Upload</label>
+                    <div class="relative">
+                        <input type="file" name="file" 
+                            class="w-full px-4 py-2.5 rounded-lg border border-gray-200 input-gradient input-focus-ring focus:border-indigo-500 focus:ring-1 focus:ring-indigo-200"
+                            data-tooltip="Upload a file (max 5MB)">
+                        <div class="validation-icon absolute right-3 top-1/2 transform -translate-y-1/2"></div>
+                    </div>
+                    <p class="text-sm text-gray-500">Supported formats: .xlsx, .csv, .txt, .log</p>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" 
+                    class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-3 px-6 rounded-lg font-medium hover:from-indigo-700 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition-all duration-200 submit-button shadow-md">
+                    <span class="flex items-center justify-center">
+                        <span>Validate Data</span>
+                        <svg class="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                        </svg>
+                    </span>
+                </button>
+            </form>
+
+            <!-- Results Section -->
+            <div id="results" class="mt-6 p-4 bg-gradient-to-br from-gray-50 to-white rounded-lg hidden shadow-md">
+                <h2 class="text-xl font-semibold mb-4 gradient-text">Validation Results</h2>
+                <div id="resultsContent" class="space-y-2"></div>
+                
+                <!-- AI Insights Section -->
+                <div class="mt-6 pt-4 border-t border-gray-200">
+                    <h3 class="text-lg font-semibold mb-3 gradient-text">AI Insights</h3>
+                    <div id="aiInsights" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Password strength indicator
+        document.querySelector('input[name="password"]').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthBar = document.querySelector('.strength-bar');
+            let strength = 0;
+            
+            if (password.match(/[a-z]/)) strength += 25;
+            if (password.match(/[A-Z]/)) strength += 25;
+            if (password.match(/[0-9]/)) strength += 25;
+            if (password.match(/[^a-zA-Z0-9]/)) strength += 25;
+            
+            strengthBar.style.width = `${strength}%`;
+            strengthBar.style.backgroundColor = strength < 50 ? '#ef4444' : strength < 75 ? '#f59e0b' : '#10b981';
+        });
+
+        // Progress bar animation
+        const progressBar = document.querySelector('.progress-bar');
+        window.addEventListener('scroll', () => {
+            const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrolled = (winScroll / height) * 100;
+            progressBar.style.width = scrolled + "%";
+        });
+
+        document.getElementById('validatorForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const resultsDiv = document.getElementById('results');
+            const resultsContent = document.getElementById('resultsContent');
+            const aiInsights = document.getElementById('aiInsights');
+            
+            // Show loading state
+            resultsDiv.classList.remove('hidden');
+            resultsContent.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-indigo-600 mx-auto"></div>
+                    <p class="mt-2 text-gray-600 text-sm">Analyzing your data...</p>
+                </div>
+            `;
+            aiInsights.innerHTML = '';
+            
+            try {
+                const response = await fetch('/validate', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                // Clear previous results
+                resultsContent.innerHTML = '';
+                aiInsights.innerHTML = '';
+                
+                // Display validation results
+                for (const [field, result] of Object.entries(data.validation_results)) {
+                    const isValid = result.includes('Valid');
+                    const resultClass = isValid ? 'text-green-600' : 'text-red-600';
+                    const icon = isValid ? '✓' : '✗';
+                    const bgClass = isValid ? 'bg-green-50' : 'bg-red-50';
+                    
+                    const resultElement = document.createElement('div');
+                    resultElement.className = `flex items-center space-x-3 p-3 rounded-lg ${bgClass}`;
+                    resultElement.innerHTML = `
+                        <span class="text-lg font-medium ${resultClass}">${icon}</span>
+                        <div>
+                            <span class="font-medium text-gray-700">${field}:</span>
+                            <span class="${resultClass} ml-2">${result}</span>
+                        </div>
+                    `;
+                    
+                    resultsContent.appendChild(resultElement);
+                }
+
+                // Display AI insights
+                for (const [field, insight] of Object.entries(data.ai_insights)) {
+                    const insightElement = document.createElement('div');
+                    insightElement.className = 'p-3 bg-blue-50 rounded-lg';
+                    
+                    let insightContent = '';
+                    if (Array.isArray(insight)) {
+                        insightContent = insight.map(item => `<p class="text-sm text-blue-700">• ${item}</p>`).join('');
+                    } else {
+                        insightContent = `<p class="text-sm text-blue-700">${insight}</p>`;
+                    }
+                    
+                    insightElement.innerHTML = `
+                        <div class="font-medium text-blue-800 mb-1">${field.replace('_', ' ').replace(/\b\w/g, l => l.toUpperCase())}</div>
+                        ${insightContent}
+                    `;
+                    
+                    aiInsights.appendChild(insightElement);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                resultsContent.innerHTML = `
+                    <div class="p-3 bg-red-50 rounded-lg">
+                        <p class="text-red-600">An error occurred during validation.</p>
+                    </div>
+                `;
+            }
+        });
+
+        // Add input validation feedback
+        const inputs = document.querySelectorAll('input');
+        inputs.forEach(input => {
+            input.addEventListener('input', function() {
+                const validationIcon = this.parentElement.querySelector('.validation-icon');
+                if (this.value) {
+                    validationIcon.innerHTML = `
+                        <span class="text-green-500 text-sm">✓</span>
+                    `;
+                } else {
+                    validationIcon.innerHTML = '';
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
